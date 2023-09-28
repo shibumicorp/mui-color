@@ -8,7 +8,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import * as CommonTypes from '../../helpers/commonTypes';
 import useEventCallback from '../../helpers/useEventCallback';
 
@@ -32,66 +33,6 @@ const getRGB = _h => {
   return rgb;
 };
 
-const useStyles = makeStyles({
-  root: {
-    position: 'absolute',
-    width: 'inherit',
-    height: 'inherit',
-    background: props => `${props.cssRgb} none repeat scroll 0% 0%`,
-    margin: 0,
-  },
-  gradientPosition: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  },
-  hsvGradientS: {
-    background:
-      'rgba(0, 0, 0, 0) linear-gradient(to right, rgb(255, 255, 255), rgba(255, 255, 255, 0)) repeat scroll 0% 0%',
-  },
-  hsvGradientV: {
-    background: 'rgba(0, 0, 0, 0) linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0)) repeat scroll 0% 0%',
-  },
-  hslGradientS: {
-    background:
-      'rgba(0, 0, 0, 0) linear-gradient(to bottom, rgb(128, 128, 128), rgba(255, 255, 255, 0)) repeat scroll 0% 0%',
-  },
-  hslGradientL: {
-    background:
-      'rgba(0, 0, 0, 0) linear-gradient(to left, rgb(0, 0, 0), rgba(128, 128, 128, 0), rgb(255, 255, 255)) repeat scroll 0% 0%',
-  },
-  hsvGradientCursor: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    borderColor: '#f0f0f0',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    boxShadow: 'rgba(0, 0, 0, 0.37) 0px 1px 4px 0px',
-    transition: 'box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-    borderRadius: 4,
-    cursor: props => !props.pressed && 'pointer',
-    zIndex: 100,
-    transform: 'translate(-4px, -4px)',
-    '&:hover': {
-      boxShadow: '0px 0px 0px 8px rgba(63, 81, 181, 0.16)',
-    },
-    '&:focus': {
-      outline: 'none !important',
-      boxShadow: '0px 0px 0px 8px rgba(63, 81, 181, 0.16)',
-    },
-    '&:focus > div': {
-      //  TODO
-    },
-  },
-  hsvGradientCursorC: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    boxShadow: 'white 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
-  },
-});
-
 const HSVGradient = ({ className, color, onChange, isHsl, ...props }) => {
   const latestColor = React.useRef(color);
   const [focus, onFocus] = React.useState(false);
@@ -104,7 +45,6 @@ const HSVGradient = ({ className, color, onChange, isHsl, ...props }) => {
   let cursorPos = { x: 0, y: 0 };
   const rgb = getRGB(color.hsv[0]);
   const cssRgb = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
-  const classes = useStyles({ ...props, cssRgb });
 
   const setPosition = (pos, f) => {
     cursorPos = pos;
@@ -237,18 +177,41 @@ const HSVGradient = ({ className, color, onChange, isHsl, ...props }) => {
   });
   return (
     <div className={className}>
-      <div className={classes.root} {...props} ref={box} data-testid="hsvgradient-color">
-        <div
-          className={`muicc-hsvgradient-s ${isHsl ? classes.hslGradientS : classes.hsvGradientS} ${
-            classes.gradientPosition
-          }`}
+      <Box
+        {...props}
+        ref={box}
+        data-testid="hsvgradient-color"
+        sx={{
+          position: 'absolute',
+          width: 'inherit',
+          height: 'inherit',
+          background: `${cssRgb} none repeat scroll 0% 0%`,
+          margin: 0,
+        }}
+      >
+        <Box
+          className="muicc-hsvgradient-s"
+          sx={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: isHsl
+              ? 'rgba(0, 0, 0, 0) linear-gradient(to bottom, rgb(128, 128, 128), rgba(255, 255, 255, 0)) repeat scroll 0% 0%'
+              : 'rgba(0, 0, 0, 0) linear-gradient(to right, rgb(255, 255, 255), rgba(255, 255, 255, 0)) repeat scroll 0% 0%',
+          }}
         >
-          <div
-            className={`muicc-hsvgradient-v ${isHsl ? classes.hslGradientL : classes.hsvGradientV} ${
-              classes.gradientPosition
-            }`}
+          <Box
+            className="muicc-hsvgradient-v"
+            sx={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              background: isHsl
+                ? 'rgba(0, 0, 0, 0) linear-gradient(to left, rgb(0, 0, 0), rgba(128, 128, 128, 0), rgb(255, 255, 255)) repeat scroll 0% 0%'
+                : 'rgba(0, 0, 0, 0) linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0)) repeat scroll 0% 0%',
+            }}
           >
-            <div
+            <HSVGradientCursor
               ref={cursor}
               tabIndex="0"
               role="slider"
@@ -257,16 +220,16 @@ const HSVGradient = ({ className, color, onChange, isHsl, ...props }) => {
               aria-valuenow={color.hsv[1]}
               pressed={`${pressed.current}`}
               data-testid="hsvgradient-cursor"
-              className={`muicc-hsvgradient-cursor ${classes.hsvGradientCursor}`}
+              className="muicc-hsvgradient-cursor"
               onKeyDown={handleKey}
               onFocus={handleFocus}
               onBlur={handleBlur}
             >
-              <div className={`muicc-hsvgradient-cursor-c ${classes.hsvGradientCursorC}`} />
-            </div>
-          </div>
-        </div>
-      </div>
+              <HSVGradientCursorC className="muicc-hsvgradient-cursor-c" />
+            </HSVGradientCursor>
+          </Box>
+        </Box>
+      </Box>
     </div>
   );
 };
@@ -281,5 +244,39 @@ HSVGradient.propTypes = {
 HSVGradient.defaultProps = {
   isHsl: false,
 };
+
+const HSVGradientCursor = styled('div', { shouldForwardProp: propName => propName !== 'pressed' })(
+  ({ theme, ...props }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    borderColor: '#f0f0f0',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    boxShadow: 'rgba(0, 0, 0, 0.37) 0px 1px 4px 0px',
+    transition: 'box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+    borderRadius: 4,
+    cursor: !props.pressed && 'pointer',
+    zIndex: 100,
+    transform: 'translate(-4px, -4px)',
+    '&:hover': {
+      boxShadow: '0px 0px 0px 8px rgba(63, 81, 181, 0.16)',
+    },
+    '&:focus': {
+      outline: 'none !important',
+      boxShadow: '0px 0px 0px 8px rgba(63, 81, 181, 0.16)',
+    },
+    '&:focus > div': {
+      //  TODO
+    },
+  }),
+);
+
+const HSVGradientCursorC = styled('div')(() => ({
+  width: 8,
+  height: 8,
+  borderRadius: 4,
+  boxShadow: 'white 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
+}));
 
 export default HSVGradient;
