@@ -72,7 +72,18 @@ const ColorButton = ({
   return component;
 };
 
-const StyledButton = styled(Button)(({ theme, ...props }) => ({
+const StyledButton = styled(Button, {
+  shouldForwardProp: propName =>
+    propName !== 'colorError' &&
+    propName !== 'alpha' &&
+    propName !== 'backgroundColor' &&
+    propName !== 'borderColor' &&
+    propName !== 'borderWidth' &&
+    propName !== 'width' &&
+    propName !== 'minWidth' &&
+    propName !== 'height' &&
+    propName !== 'hoverColor',
+})(({ theme, ...props }) => ({
   backgroundImage:
     props.colorError || props.alpha < 1
       ? `
