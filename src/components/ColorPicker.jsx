@@ -13,7 +13,6 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Popover from '@mui/material/Popover';
-import { StylesProvider, createGenerateClassName } from '@mui/styles';
 
 import { styled } from '@mui/material/styles';
 import ColorButton from './ColorButton';
@@ -22,10 +21,6 @@ import * as ColorTool from '../helpers/colorTool';
 import uncontrolled from '../helpers/uncontrolled';
 import * as CommonTypes from '../helpers/commonTypes';
 import useTranslate from '../helpers/useTranslate';
-
-const generateClassName = createGenerateClassName({
-  seed: 'ColorPicker',
-});
 
 const getColorText = (color, disablePlainColor) => {
   let text = disablePlainColor ? `color-${color.hex}` : color.name;
@@ -137,18 +132,16 @@ const ColorPicker = ({
   }
 
   return (
-    <StylesProvider generateClassName={generateClassName}>
-      <Box ref={refPicker} display="flex" flexDirection="row" width="max-content">
-        <StyledColorButton
-          data-testid="colorpicker-button"
-          className="muicc-colorpicker-button"
-          color={color}
-          onClick={handleClick}
-        />
-        {textField}
-        {box}
-      </Box>
-    </StylesProvider>
+    <Box ref={refPicker} display="flex" flexDirection="row" width="max-content">
+      <StyledColorButton
+        data-testid="colorpicker-button"
+        className="muicc-colorpicker-button"
+        color={color}
+        onClick={handleClick}
+      />
+      {textField}
+      {box}
+    </Box>
   );
 };
 
