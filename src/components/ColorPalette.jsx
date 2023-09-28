@@ -9,26 +9,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import ColorButton from './ColorButton';
 import * as CommonTypes from '../helpers/commonTypes';
 import useTranslate from '../helpers/useTranslate';
 
-const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: '8px 0 0 8px',
-  },
-  paletteButton: {
-    margin: '0 8px 8px 0',
-    padding: 0,
-  },
-});
-
 const ColorPalette = ({ size, borderWidth, palette, onSelect, disableAlpha }) => {
-  const classes = useStyles();
   const { t } = useTranslate();
   const handleSelectColor = name => {
     const translatedName = t(name);
@@ -36,22 +23,35 @@ const ColorPalette = ({ size, borderWidth, palette, onSelect, disableAlpha }) =>
   };
 
   return (
-    <div className={classes.root}>
+    <Box
+      display="flex"
+      flexDirection="row"
+      flexWrap="wrap"
+      paddingTop={0}
+      paddingRight={1}
+      paddingBottom={1}
+      paddingLeft={0}
+    >
       {Object.keys(palette).map(name => (
-        <ColorButton
+        <StyledColorButton
           size={size}
           key={`${name}`}
           color={palette[name]}
-          className={`muicc-palette-button ${classes.paletteButton}`}
+          className="muicc-palette-button"
           borderWidth={borderWidth}
           tooltip={name}
           disableAlpha={disableAlpha}
           onClick={() => handleSelectColor(name)}
         />
       ))}
-    </div>
+    </Box>
   );
 };
+
+const StyledColorButton = styled(ColorButton)(() => ({
+  margin: '0 8px 8px 0',
+  padding: 0,
+}));
 
 ColorPalette.propTypes = {
   borderWidth: PropTypes.number,
