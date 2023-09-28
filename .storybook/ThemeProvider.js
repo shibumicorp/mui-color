@@ -2,21 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider as StyledThemeProvider } from '@mui/styles';
-import { StylesProvider } from '@mui/styles';
-import { createMuiTheme } from '@mui/material';
+import { Experimental_CssVarsProvider as CssVarsProvider, StyledEngineProvider, experimental_extendTheme as extendTheme } from '@mui/material/styles';
 
 const ThemeProvider = ({ theme, children }) => {
   const { locale, ...options } = theme;
-  const nextTheme = createMuiTheme(options, locale);
+  const nextTheme = extendTheme(options, locale);
 
   return (
-    <StylesProvider injectFirst>
-      <StyledThemeProvider theme={nextTheme}>
+    <StyledEngineProvider injectFirst>
+      <CssVarsProvider theme={nextTheme}>
         <CssBaseline />
         {children}
-      </StyledThemeProvider>
-    </StylesProvider>
+      </CssVarsProvider>
+    </StyledEngineProvider>
   );
 };
 
