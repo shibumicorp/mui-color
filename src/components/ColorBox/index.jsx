@@ -8,10 +8,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import { styled } from '@mui/material/styles';
 import HSVGradient from './HSVGradient';
 import ColorInput from '../ColorInput';
 import ColorPalette from '../ColorPalette';
@@ -21,80 +21,6 @@ import { getCssColor, parse as colorParse, validateColor } from '../../helpers/c
 import uncontrolled from '../../helpers/uncontrolled';
 import * as CommonTypes from '../../helpers/commonTypes';
 import useTranslate from '../../helpers/useTranslate';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    // Ugly fix for beta 1
-    backgroundColor: theme.palette ? theme.palette.background.paper : 'fff',
-    position: 'relative',
-    width: 'min-content',
-    height: 'min-content',
-    padding: '0px',
-  },
-  container: {
-    justifyContent: 'space-around',
-    overflow: 'hidden',
-    width: props => props.boxWidth,
-    padding: 0,
-  },
-  colorboxHsvGradient: {
-    width: props => `calc(${props.boxWidth}px - 16px)`,
-    height: 'calc(128px - 16px)',
-    margin: 8,
-  },
-  colorboxSliders: {
-    width: props => props.boxWidth,
-    padding: '8px 8px 4px 8px',
-  },
-  colorboxInputs: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: '8px 4px 8px 8px',
-    justifyContent: 'space-between',
-  },
-  colorboxInput: {},
-  colorboxColorBg: {
-    width: 48,
-    height: 48,
-    background:
-      'linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(135deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(135deg, transparent 75%, #ccc 75%)',
-    backgroundSize: '8px 8px',
-    backgroundPosition: '0 0, 4px 0, 4px -4px, 0px 4px',
-    backgroundColor: 'white',
-    borderRadius: 4,
-  },
-  colorboxColor: {
-    width: 48,
-    height: 48,
-    background: props =>
-      props.colorError
-        ? `repeating-linear-gradient(
-      135deg,
-      transparent,
-      transparent 29px,
-      #f44336 29px,
-      #f44336 32px
-    )`
-        : 'none',
-    backgroundColor: props => (props.colorError ? 'transparent' : props.backgroundColor),
-    borderRadius: 4,
-    border: props => (props.colorError ? '2px solid #f44336' : 'none'),
-  },
-  colorboxControls: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 8,
-    '&> button': {
-      marginLeft: 'auto',
-    },
-  },
-  colorboxError: {
-    color: '#f44336',
-    lineHeight: '36.5px',
-  },
-}));
 
 const ColorBox = ({
   value,
@@ -121,7 +47,6 @@ const ColorBox = ({
   const cssColor = getCssColor(color, 'hex', true);
   const { backgroundColor } = color.css;
   const boxWidth = 320;
-  const classes = useStyles({ boxWidth, backgroundColor, colorError: !!color.error });
 
   const handleSet = () => {
     onDeferredChange(color);
@@ -157,10 +82,14 @@ const ColorBox = ({
 
   const displayInput = () =>
     inputFormats.length > 0 && (
-      <div className={`muicc-colorbox-inputs  ${classes.colorboxInputs}`}>
-        <div className={`muicc-colorbox-colorBg ${classes.colorboxColorBg}`}>
-          <div className={`muicc-colorbox-color ${classes.colorboxColor}`} />
-        </div>
+      <ColorBoxInputs className="muicc-colorbox-inputs">
+        <ColorBoxColorBG className="muicc-colorbox-colorBg">
+          <ColorBoxColor
+            className="muicc-colorbox-color"
+            colorError={!!color.error}
+            backgroundColor={backgroundColor}
+          />
+        </ColorBoxColorBG>
         {inputFormats.map(input => (
           <ColorInput
             key={input}
@@ -168,23 +97,24 @@ const ColorBox = ({
             format={input}
             disableAlpha
             enableErrorDisplay={false}
-            className={`muicc-colorbox-input ${classes.colorboxInput}`}
+            className="muicc-colorbox-input"
             onChange={handleInputChange}
           />
         ))}
-      </div>
+      </ColorBoxInputs>
     );
 
   return (
-    <Box p={2} className={classes.root} {...props}>
-      <Box className={classes.container}>
-        <HSVGradient
-          className={`muicc-colorbox-hsvgradient ${classes.colorboxHsvGradient}`}
+    <Root p={2} {...props}>
+      <Box sx={{ justifyContent: 'space-around', overflow: 'hidden', width: boxWidth, padding: 0 }}>
+        <StyledHSVGradient
+          className="muicc-colorbox-hsvgradient"
           color={color}
+          boxWidth={boxWidth}
           onChange={handleSVChange}
           isHsl={hslGradient}
         />
-        <div className={`muicc-colorbox-sliders ${classes.colorboxSliders}`}>
+        <ColorBoxSliders className="muicc-colorbox-sliders" boxWidth={boxWidth}>
           <HueSlider
             data-testid="hueslider"
             aria-label="color slider"
@@ -205,7 +135,7 @@ const ColorBox = ({
               onChange={handleAlphaChange}
             />
           )}
-        </div>
+        </ColorBoxSliders>
         {displayInput(inputFormats)}
         {palette && (
           <>
@@ -218,16 +148,16 @@ const ColorBox = ({
             />
           </>
         )}
-        <div className={`muicc-colorbox-controls ${classes.colorboxControls}`}>
+        <ColorBoxControls className="muicc-colorbox-controls">
           {color.error && (
-            <span className={`muicc-colorbox-error ${classes.colorboxError}`} data-testid="colorbox-error">
+            <ColorBoxError className="muicc-colorbox-error" data-testid="colorbox-error">
               {t(color.error)}
-            </span>
+            </ColorBoxError>
           )}
           {deferred && <Button onClick={handleSet}>{t('Set')}</Button>}
-        </div>
+        </ColorBoxControls>
       </Box>
-    </Box>
+    </Root>
   );
 };
 
@@ -252,5 +182,82 @@ ColorBox.defaultProps = {
   disableAlpha: false,
   hslGradient: false,
 };
+
+const Root = styled(Box)(({ theme }) => ({
+  // Ugly fix for beta 1
+  backgroundColor: theme.palette ? theme.palette.background.paper : 'fff',
+  position: 'relative',
+  width: 'min-content',
+  height: 'min-content',
+  padding: '0px',
+}));
+
+const StyledHSVGradient = styled(HSVGradient, { shouldForwardProp: propName => propName !== 'boxWidth' })(
+  ({ theme, ...props }) => ({
+    width: `calc(${props.boxWidth}px - 16px)`,
+    height: 'calc(128px - 16px)',
+    margin: 8,
+  }),
+);
+
+const ColorBoxSliders = styled('div', { shouldForwardProp: propName => propName !== 'boxWidth' })(
+  ({ theme, ...props }) => ({
+    width: props.boxWidth,
+    padding: '8px 8px 4px 8px',
+  }),
+);
+
+const ColorBoxInputs = styled('div')(() => ({
+  display: 'flex',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  padding: '8px 4px 8px 8px',
+  justifyContent: 'space-between',
+}));
+
+const ColorBoxColorBG = styled('div')(() => ({
+  width: 48,
+  height: 48,
+  background:
+    'linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(135deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(135deg, transparent 75%, #ccc 75%)',
+  backgroundSize: '8px 8px',
+  backgroundPosition: '0 0, 4px 0, 4px -4px, 0px 4px',
+  backgroundColor: 'white',
+  borderRadius: 4,
+}));
+
+const ColorBoxError = styled('div')(({ theme }) => ({
+  color: theme.palette.error.main,
+  lineHeight: '36.5px',
+}));
+
+const ColorBoxColor = styled('div', {
+  shouldForwardProp: propName => propName !== 'colorError' && propName !== 'backgroundColor',
+})(({ theme, ...props }) => ({
+  width: 48,
+  height: 48,
+  background: props.colorError
+    ? `repeating-linear-gradient(
+      135deg,
+      transparent,
+      transparent 29px,
+      #f44336 29px,
+      #f44336 32px
+    )`
+    : 'none',
+  backgroundColor: props.colorError ? 'transparent' : props.backgroundColor,
+  borderRadius: 4,
+  border: props.colorError ? '2px solid #f44336' : 'none',
+}));
+
+const ColorBoxControls = styled('div')(() => ({
+  display: 'flex',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  padding: 8,
+  '&> button': {
+    marginLeft: 'auto',
+  },
+}));
 
 export default uncontrolled(ColorBox);
