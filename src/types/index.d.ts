@@ -1,4 +1,4 @@
-declare module 'mui-color' {
+declare module '@shibumi/mui-color' {
 
   enum ColorFormat {
     "plain",
