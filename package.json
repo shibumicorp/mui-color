@@ -1,6 +1,6 @@
 {
   "name": "@shibumi/mui-color",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "The lightest colorpicker for React Mui v5. No dependencies. It uses Hooks and support Typescript, and more !",
   "main": "index.js",
   "module": "./esm/index.js",
