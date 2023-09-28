@@ -27,10 +27,10 @@ const ColorPalette = ({ size, borderWidth, palette, onSelect, disableAlpha }) =>
       display="flex"
       flexDirection="row"
       flexWrap="wrap"
-      paddingTop={0}
-      paddingRight={1}
-      paddingBottom={1}
-      paddingLeft={0}
+      paddingTop={1}
+      paddingRight={0}
+      paddingBottom={0}
+      paddingLeft={1}
     >
       {Object.keys(palette).map(name => (
         <StyledColorButton
