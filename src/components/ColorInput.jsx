@@ -9,29 +9,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import InputLabel from '@mui/material/InputLabel';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
-import { makeStyles } from '@mui/styles';
 import * as ColorTool from '../helpers/colorTool';
 import uncontrolled from '../helpers/uncontrolled';
 import * as CommonTypes from '../helpers/commonTypes';
 import useTranslate from '../helpers/useTranslate';
-
-const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  colorinputRaw: {
-    paddingRight: 4,
-  },
-  formControl: {
-    width: 100,
-  },
-});
 
 const ColorInput = ({
   value,
@@ -43,7 +30,6 @@ const ColorInput = ({
   disablePlainColor,
   ...props
 }) => {
-  const classes = useStyles();
   const { t, i18n } = useTranslate();
   const color = ColorTool.validateColor(value, disableAlpha, t, i18n.language, disablePlainColor);
   let field;
@@ -98,17 +84,17 @@ const ColorInput = ({
     components = ColorTool.getComponents(color, format, disableAlpha, t);
     const names = Object.keys(components);
     field = (
-      <div ref={forwardRef} className={classes.root}>
+      <Box ref={forwardRef} display="flex" flexDirection="row">
         {names.map(cn => (
-          <FormControl key={cn} className={`muicc-colorinput-raw ${classes.colorinputRaw}`} error={!!color.error}>
+          <FormControl key={cn} className="muicc-colorinput-raw" error={!!color.error} sx={{ pr: 0.5 }}>
             {buildInput(cn, components[cn].name, components[cn].value, components[cn].unit, names.length === 1)}
           </FormControl>
         ))}
-      </div>
+      </Box>
     );
   }
   return (
-    <FormControl className={classes.formControl} error={!!color.error} data-testid="colorinput">
+    <FormControl error={!!color.error} sx={{ width: '100px' }} data-testid="colorinput">
       {field}
       {enableErrorDisplay && color.error && <FormHelperText id="component-error-text">{color.error}</FormHelperText>}
     </FormControl>

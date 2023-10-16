@@ -210,6 +210,12 @@ export const Container = () => (
 
 Contributions welcome! Read the [contribution guidelines](CONTRIBUTING.md) first.
 
+## Publishing
+
+```
+yarn build
+npm publish ./dist
+```
 
 ## License
 
