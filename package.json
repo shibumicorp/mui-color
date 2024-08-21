@@ -1,6 +1,6 @@
 {
   "name": "@shibumi/mui-color",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The lightest colorpicker for React Mui v5. No dependencies. It uses Hooks and support Typescript, and more !",
   "main": "index.js",
   "module": "./esm/index.js",
@@ -105,10 +105,9 @@
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@mui/material": "^5.11.13",
-    "material-ui-popup-state": "^1.5.3",
     "prop-types": "^15.7.2",
-    "react": "^16.0.0 || ^17.0.0",
-    "react-dom": "^16.0.0 || ^17.0.0"
+    "react": "^16.0.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {},
   "jest": {
